@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-assignment-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: microservice-assignment
+  template:
+    metadata:
+      labels:
+        app: microservice-assignment
+    spec:
+      containers:
+      - name: microservice-assignment
+        image: gcr.io/absolute-pulsar-423201-k7/node-gcp:v1
+        ports:
+        - containerPort: 3000
