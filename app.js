@@ -3,6 +3,47 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+const { Storage } = require('@google-cloud/storage');
+const Multer = require('multer');
+
+const storage = new Storage({
+  projectId: 'absolute-pulsar-423201-k7',
+  keyFilename: 'keyFile.json'
+});
+
+const bucketName = 'sachins-test';
+const bucket = storage.bucket(bucketName);
+
+const multer = Multer({
+  storage: Multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
+
+// Handle file upload
+app.post('/upload', multer.single('file'), async (req, res) => {
+  const file = req.file;
+
+  if (!file) {
+    res.status(400).send('No file uploaded.');
+    return;
+  }
+
+  const blob = bucket.file(file.originalname);
+  const blobStream = blob.createWriteStream();
+
+  blobStream.on('error', (err) => {
+    res.status(500).send(err);
+  });
+
+  blobStream.on('finish', () => {
+    res.status(200).send('File uploaded successfully.');
+  });
+
+  blobStream.end(file.buffer);
+});
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
