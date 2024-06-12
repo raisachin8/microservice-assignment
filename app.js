@@ -1,17 +1,20 @@
 // app.js
 const express = require('express');
 const app = express();
-const port = 3000;
+require('dotenv').config()
+
+const port = process.env.PORT || 3000;;
+
 
 const { Storage } = require('@google-cloud/storage');
 const Multer = require('multer');
 
 const storage = new Storage({
-  projectId: 'absolute-pulsar-423201-k7',
-  keyFilename: 'keyFile.json'
+  projectId: process.env.PROJECT_ID,
+  keyFilename: process.env.KEY_FILE_NAME,
 });
 
-const bucketName = 'sachins-test';
+const bucketName = process.env.BUCKET_NAME;
 const bucket = storage.bucket(bucketName);
 
 const multer = Multer({
