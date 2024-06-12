@@ -1,3 +1,4 @@
 node_modules
 keyFile.json
 package.lock.json
+.env
